@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import {useSelector} from 'react-redux';
+import {useSelector,useDispatch} from 'react-redux';
 import {Link} from '@reach/router';
 import OverviewBar from './elements/OverviewBar';
 import ChartsContainer from './elements/ChartsContainer';
 import Table from './elements/Table';
+import { useEffect } from 'react';
 
 
 const Home = () => {
     const currentState = useSelector(state => state);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch({type:'GET_US_DEFAULT_DATA'});
+    },[]);
 
     const content = currentState.stovdata;
     const title = 'UNITED STATES';

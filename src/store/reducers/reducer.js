@@ -10,7 +10,7 @@ const initialState = {
     tabledata: [],
     statechartdata: [],
     yaxis: '',
-    stateId: ''
+    stateId: '',
 };
 
 const reducer = (state = initialState, action) => {
@@ -83,8 +83,22 @@ const reducer = (state = initialState, action) => {
             }
             chartData = [...chartData,{id: action.yaxis, data: tableData}];
             return {
-                ...state,chartdata: chartData
+                ...state,chartdata: chartData,
             };
+
+        case actionTypes.GET_US_DEFAULT_DATA:
+            chartData = [];
+            tableData = [];
+            rlen = state.usdata.length;
+            
+            for (let i = 0; i < rlen;++i) {
+                tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i]['positive'] === undefined ? null : state.usdata[i]['positive']}];
+            }
+            chartData = [...chartData,{id: action.yaxis, data: tableData}];
+            return {
+                ...state,chartdata: chartData,
+            };
+
 
         case actionTypes.GET_STATES_TABLE_DATA:
             let stateobj = state.stdata.filter(e => e.state===action.stateId);
