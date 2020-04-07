@@ -13,6 +13,40 @@ const initialState = {
     stateId: '',
 };
 
+const anySort = (val1,val2) => {
+    let compare = 0;
+
+    if (val1 < val2) {
+        compare = 1;
+    } else {
+        compare = -1;
+    }
+
+    return compare;
+};
+
+const dateSort = (a,b) => {
+    let compare = 0;
+
+    const val1 = Date.parse(a.date);
+    const val2 = Date.parse(b.date);
+
+    compare = anySort(val1,val2);
+
+    return compare;
+};
+
+const posSort = (a,b) => {
+    let compare = 0;
+
+    const val1 = a.positive;
+    const val2 = b.positive;
+
+    compare = anySort(val1,val2);
+
+    return compare;
+};
+
 const reducer = (state = initialState, action) => {
     let chartData = [];
     let tableData = [];
@@ -63,6 +97,7 @@ const reducer = (state = initialState, action) => {
                 data = [...data,{"key":action.stovdata[i].state,"state":StateKeys[action.stovdata[i].state],"positive": action.stovdata[i].positive,
                 "hospitalized": action.stovdata[i].hospitalized, "death": action.stovdata[i].death,"total": action.stovdata[i].totalTestResults}];
             }
+            data.sort(posSort);
 
             return {
                 ...state,stovdata: data
@@ -94,7 +129,7 @@ const reducer = (state = initialState, action) => {
             for (let i = 0; i < rlen;++i) {
                 tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i]['positive'] === undefined ? null : state.usdata[i]['positive']}];
             }
-            chartData = [...chartData,{id: action.yaxis, data: tableData}];
+            chartData = [...chartData,{id: "positive", data: tableData}];
             return {
                 ...state,chartdata: chartData,
             };
@@ -121,6 +156,8 @@ const reducer = (state = initialState, action) => {
                             
                 tableData = [...tableData,{x : dt,y: (stateobj[i].positive === undefined || isNaN(stateobj[i].positive)) ? null : stateobj[i].positive}];
             }
+
+            data.sort(dateSort);
 
             chartData = [...chartData,{id: "positive", data: tableData}];
             
