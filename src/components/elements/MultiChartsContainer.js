@@ -45,7 +45,7 @@ const MultiChartsContainer = () => {
             name="Multiple Lines"
             className="basic-multi-select"
             />
-            <LineChart data={data} settings={settings} />
+            <LineChart data={data} />
             </div>
         </StyledChartsContainer>
     );

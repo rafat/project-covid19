@@ -3,7 +3,7 @@ import {ResponsiveLine} from '@nivo/line';
 
 
 const LineChart = ({data,settings}) => {
-    let scheme = 'nivo';
+    let scheme = {scheme:'category10'};
     let margin ={top: 20, right: 100, bottom: 50, left: 50};
     let yScale = {type: "linear",stacked: false};
     let xScale = {type: "time",precision: "day",format: "%Y-%m-%d"};
