@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actions';
 import {StateKeys} from '../../data/StateKeys';
+import {StateData} from '../../data/StateData';
 
 const initialState = {
     usovdata: {},
@@ -9,6 +10,7 @@ const initialState = {
     chartdata: [],
     tabledata: [],
     statechartdata: [],
+    comparedata: [],
     yaxis: '',
     stateId: '',
 };
@@ -70,6 +72,7 @@ const reducer = (state = initialState, action) => {
             data = [];
             chartData = [];
             tableData = [];
+            
 
             for(let i = rlen -1; i >= 0; i--) {
                 let dt = action.usdata[i].date.toString().substring(0,4).toString()+"-"+action.usdata[i].date.toString().substring(4,6).toString()+
@@ -178,6 +181,44 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,statechartdata: chartData
             };
+
+        case actionTypes.GET_COMPARISON_CHART_DATA:
+            //values
+            chartData = [];
+            if (action.yaxis) {
+                for(let j = 0; j < action.yaxis.length;++j) {
+                    if (action.yaxis[j].key === "US") {
+                        chartData = [];
+                        tableData = [];
+                        rlen = state.usdata.length;
+                        let state2 = StateData.filter(e => e.state===action.yaxis[j].key);
+                        let pop = state2[0].population/100000;
+            
+                        for (let i = 0; i < rlen;++i) {
+                            tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i][action.stats] === undefined ? null : state.usdata[i][action.stats]/pop}];
+                        }
+                        chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
+                    } else {
+                        let stateobj = state.stdata.filter(e => e.state===action.yaxis[j].key);
+                        let state2 = StateData.filter(e => e.state===action.yaxis[j].key);
+                        rlen = stateobj.length;
+                        let pop = state2[0].population/100000;
+                        tableData = [];
+                        for (let i = rlen-1; i >= 0;i--) {
+                            let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
+                            "-"+stateobj[i].date.toString().substring(6).toString();
+                            tableData = [...tableData,{x: dt,
+                            y: (stateobj[i][action.stats] === undefined || isNaN(stateobj[i][action.stats])) ? null : stateobj[i][action.stats]/pop}];
+                        }
+                        chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
+                    }
+                    
+                }
+            }
+
+            return {
+                ...state,comparedata: chartData
+            }
 
         default : {
             return state;

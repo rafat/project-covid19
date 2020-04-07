@@ -1,4 +1,5 @@
 export const StateData = [
+    {"state":"US","name":"United States","population": 331875705 },
     {"state":"AK","name":"Alaska","population": 731545 },
     {"state":"AL","name":"Alabama","population": 4903185},
     {"state":"AR","name":"Arkansas","population": 3017825},
