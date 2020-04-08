@@ -41,7 +41,15 @@ const LineChart = ({data,settings}) => {
     if (settings) {
         scheme = settings.linecolor ? settings.linecolor : scheme;
         axisLeft = settings.axisLeft ? settings.axisLeft : axisLeft;
+        xScale = settings.xScale ? settings.xScale : xScale;
+        xFormat = settings.xFormat ? settings.xFormat : xFormat;
+        axisBottom = settings.axisBottom ? settings.axisBottom : axisBottom;
     }
+    console.log(xScale);
+    console.log(xFormat);
+    console.log(axisBottom);
+
+    console.log(settings);
 
     return (
         <ResponsiveLine

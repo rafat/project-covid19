@@ -1,6 +1,7 @@
 import * as actionTypes from '../actions/actions';
 import {StateKeys} from '../../data/StateKeys';
 import {StateData} from '../../data/StateData';
+import {BaselineData} from '../../data/BaselineData';
 
 const initialState = {
     usovdata: {},
@@ -81,7 +82,7 @@ const reducer = (state = initialState, action) => {
                 data = [...data,{"date" : dt,"positive": action.usdata[i].positive, "hospitalized": action.usdata[i].hospitalized,
                                 "death": action.usdata[i].death,"total": action.usdata[i].totalTestResults,"deathIncrease":action.usdata[i].deathIncrease,
                                 "hospitalizedIncrease":action.usdata[i].hospitalizedIncrease,"positiveIncrease":action.usdata[i].positiveIncrease,
-                                "totalIncrease":action.usdata[i].totalTestResultsIncrease,"hospitalizedCumulative": action.usdata[i].hospitalizedCumulative,
+                                "totalTestResultsIncrease":action.usdata[i].totalTestResultsIncrease,"hospitalizedCumulative": action.usdata[i].hospitalizedCumulative,
                                 "hospitalizedCurrently": action.usdata[i].hospitalizedCurrently,"inIcuCumulative": action.usdata[i].inIcuCumulative,
                                 "inIcuCurrently": action.usdata[i].inIcuCurrently,"cfr": cfr
                             }];
@@ -143,7 +144,6 @@ const reducer = (state = initialState, action) => {
             rlen = state.usdata.length;
             let state2 = StateData.filter(e => e.state==="US");
             let pop = state2[0].population/100000;
-            console.log(pop);
                 
             for (let i = 0; i < rlen;++i) {
                 tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i]['positive'] === undefined ? null : state.usdata[i]['positive']/pop}];
@@ -168,7 +168,7 @@ const reducer = (state = initialState, action) => {
                 data = [...data,{"date" : dt,"positive": stateobj[i].positive, "hospitalized": stateobj[i].hospitalized,
                                 "death": stateobj[i].death,"total": stateobj[i].totalTestResults,"deathIncrease":stateobj[i].deathIncrease,
                                 "hospitalizedIncrease":stateobj[i].hospitalizedIncrease,"positiveIncrease":stateobj[i].positiveIncrease,
-                                "totalIncrease":stateobj[i].totalTestResultsIncrease,"hospitalizedCumulative": stateobj[i].hospitalizedCumulative,
+                                "totalTestResultsIncrease":stateobj[i].totalTestResultsIncrease,"hospitalizedCumulative": stateobj[i].hospitalizedCumulative,
                                 "hospitalizedCurrently": stateobj[i].hospitalizedCurrently,"inIcuCumulative": stateobj[i].inIcuCumulative,
                                 "inIcuCurrently": stateobj[i].inIcuCurrently,"cfr": cfr
                             }];
@@ -203,36 +203,114 @@ const reducer = (state = initialState, action) => {
             chartData = [];
             console.log("yaxis");
             console.log(action.yaxis);
-            if (action.yaxis) {
-                for(let j = 0; j < action.yaxis.length;++j) {
-                    if (action.yaxis[j].key === "US") {
-                        chartData = [];
-                        tableData = [];
-                        rlen = state.usdata.length;
-                        let state2 = StateData.filter(e => e.state==="US");
-                        let pop = state2[0].population/100000;
-                        console.log(rlen);
-            
-                        for (let i = 0; i < rlen;++i) {
-                            tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i][action.stats] === undefined ? null : state.usdata[i][action.stats]/pop}];
+            console.log("baseline");
+            console.log(action.baseline);
+
+            if (action.baseline === 0) {
+                if (action.yaxis) {
+                    for(let j = 0; j < action.yaxis.length;++j) {
+                        if (action.yaxis[j].key === "US") {
+                            chartData = [];
+                            tableData = [];
+                            rlen = state.usdata.length;
+                            let state2 = StateData.filter(e => e.state==="US");
+                            let pop = state2[0].population/100000;
+    
+                            if (action.stats === "cfr") {
+                                pop = 1;
+                            }
+                
+                            for (let i = 0; i < rlen;++i) {
+                                tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i][action.stats] === undefined ? null : state.usdata[i][action.stats]/pop}];
+                            }
+                            chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
+                        } else {
+                            let stateobj = state.stdata.filter(e => e.state===action.yaxis[j].key);
+                            let state2 = StateData.filter(e => e.state===action.yaxis[j].key);
+                            rlen = stateobj.length;
+                            let pop = state2[0].population/100000;
+                            tableData = [];
+                            if (action.stats === "cfr") {
+                                for (let i = rlen-1; i >= 0;i--) {
+                                    let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
+                                    "-"+stateobj[i].date.toString().substring(6).toString();
+                                    let cfr = (stateobj[i].death/stateobj[i].positive)*100;
+                                    tableData = [...tableData,{x: dt,
+                                    y: (cfr === undefined || isNaN(cfr)) ? null : cfr}];
+                                }
+    
+                            }
+                            else {
+                                for (let i = rlen-1; i >= 0;i--) {
+                                    let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
+                                    "-"+stateobj[i].date.toString().substring(6).toString();
+                                    tableData = [...tableData,{x: dt,
+                                    y: (stateobj[i][action.stats] === undefined || isNaN(stateobj[i][action.stats])) ? null : stateobj[i][action.stats]/pop}];
+                                }
+                            }
+                            
+                            chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
                         }
-                        chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
-                    } else {
-                        let stateobj = state.stdata.filter(e => e.state===action.yaxis[j].key);
-                        let state2 = StateData.filter(e => e.state===action.yaxis[j].key);
-                        rlen = stateobj.length;
-                        let pop = state2[0].population/100000;
-                        tableData = [];
-                        for (let i = rlen-1; i >= 0;i--) {
-                            let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
-                            "-"+stateobj[i].date.toString().substring(6).toString();
-                            tableData = [...tableData,{x: dt,
-                            y: (stateobj[i][action.stats] === undefined || isNaN(stateobj[i][action.stats])) ? null : stateobj[i][action.stats]/pop}];
-                        }
-                        chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
+                        
                     }
-                    
                 }
+            } else {
+                if (action.yaxis) {
+                    for(let j = 0; j < action.yaxis.length;++j) {
+                        if (action.yaxis[j].key === "US") {
+                            chartData = [];
+                            tableData = [];
+                            let stateobj = BaselineData.filter(e => e.value === action.baseline);
+                            console.log(stateobj);
+
+                            console.log(stateobj[0].type);
+                            console.log(stateobj[0].number);
+
+                            console.log(state.usdata);
+
+                            let state2 = state.usdata.filter(e => (e[stateobj[0].type] >= 1000));
+                            
+                            rlen = state2.length;
+
+                            console.log(state2);
+                
+                            for (let i = 0; i < rlen;++i) {
+                                tableData = [...tableData,{x: i, y: state2[i][stateobj[0].type] === undefined ? null : state2[i][stateobj[0].type]}];
+                            }
+                            chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
+                        } else {
+
+                            let stateobjfirst = state.stdata.filter(e => e.state===action.yaxis[j].key);
+
+                            let stateobj = BaselineData.filter(e => e.value === action.baseline);
+
+                            let state2 = stateobjfirst.filter(e => e[stateobj[0].type] >= e[stateobj[0].number]);
+                            
+                            rlen = state2.length;
+                            
+                            tableData = [];
+                            if (action.stats === "cfr") {
+                                for (let i = rlen-1; i >= 0;i--) {
+                                    let cfr = (state2[i].death/state2[i].positive)*100;
+                                    tableData = [...tableData,{x: rlen-1-i,
+                                    y: (cfr === undefined || isNaN(cfr)) ? null : cfr}];
+                                }
+    
+                            }
+                            else {
+                                for (let i = rlen-1; i >= 0;i--) {
+                                    
+                                    tableData = [...tableData,{x: rlen-1-i,
+                                    y: (state2[i][stateobj.type] === undefined || isNaN(state2[i][stateobj.type])) ? null : state2[i][stateobj.type]}];
+                                }
+                            }
+                            
+                            chartData = [...chartData,{id: action.yaxis[j].value, data: tableData}];
+                        }
+                        
+                    }
+                }
+
             }
 
             return {

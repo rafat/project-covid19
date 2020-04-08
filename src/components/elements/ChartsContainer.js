@@ -21,7 +21,7 @@ const ChartsContainer = ({stateId}) => {
         {value: "hospitalized", label: "Hospitalizations"},
         {value: "cfr", label: "Case Fatality Rate (%)"},
         {value: "positiveIncrease", label: "Confirmed Cases (Daily Increase)"},
-        {value: "totalIncrease", label:"Total Tests (Daily Increase)"},
+        {value: "totalTestResultsIncrease", label:"Total Tests (Daily Increase)"},
         {value: "deathIncrease", label: "Deaths (Daily Increase)"},
         {value: "hospitalizedIncrease", label:"Hospitalizations (Daily Increase)"},
         {value: "hospitalizedCumulative", label: "Hospitalizations (Cumulative)"},
@@ -55,6 +55,7 @@ const ChartsContainer = ({stateId}) => {
                 onChange={displayChart} 
                 options={options} 
                 className="select-content"
+                placeholder="Select Statistics"
                 />
                 <h3>{slabel}</h3>
                 <LineChart data={data} settings={settings} />
