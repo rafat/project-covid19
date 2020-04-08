@@ -40,6 +40,7 @@ const LineChart = ({data,settings}) => {
 
     if (settings) {
         scheme = settings.linecolor ? settings.linecolor : scheme;
+        axisLeft = settings.axisLeft ? settings.axisLeft : axisLeft;
     }
 
     return (

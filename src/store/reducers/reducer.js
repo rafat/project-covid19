@@ -137,6 +137,22 @@ const reducer = (state = initialState, action) => {
                 ...state,chartdata: chartData,
             };
 
+        case actionTypes.GET_COMPARE_DEFAULT_DATA:
+            chartData = [];
+            tableData = [];
+            rlen = state.usdata.length;
+            let state2 = StateData.filter(e => e.state==="US");
+            let pop = state2[0].population/100000;
+            console.log(pop);
+                
+            for (let i = 0; i < rlen;++i) {
+                tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i]['positive'] === undefined ? null : state.usdata[i]['positive']/pop}];
+            }
+            chartData = [...chartData,{id: "United States", data: tableData}];
+            return {
+                ...state,comparedata: chartData,
+            };
+
 
         case actionTypes.GET_STATES_TABLE_DATA:
             let stateobj = state.stdata.filter(e => e.state===action.stateId);
@@ -185,14 +201,17 @@ const reducer = (state = initialState, action) => {
         case actionTypes.GET_COMPARISON_CHART_DATA:
             //values
             chartData = [];
+            console.log("yaxis");
+            console.log(action.yaxis);
             if (action.yaxis) {
                 for(let j = 0; j < action.yaxis.length;++j) {
                     if (action.yaxis[j].key === "US") {
                         chartData = [];
                         tableData = [];
                         rlen = state.usdata.length;
-                        let state2 = StateData.filter(e => e.state===action.yaxis[j].key);
+                        let state2 = StateData.filter(e => e.state==="US");
                         let pop = state2[0].population/100000;
+                        console.log(rlen);
             
                         for (let i = 0; i < rlen;++i) {
                             tableData = [...tableData,{x: state.usdata[i]['date'], y: state.usdata[i][action.stats] === undefined ? null : state.usdata[i][action.stats]/pop}];

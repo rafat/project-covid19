@@ -1,8 +1,9 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {Router} from '@reach/router';
 import {useDispatch} from 'react-redux';
 import axios from 'axios';
 import Header from './elements/Header';
+import Spinner from './elements/Spinner';
 import {API_OV_URL, API_DAILY_URL, API_STOV_URL, API_STATES_URL} from '../config';
 
 import Home from './Home';
@@ -14,6 +15,7 @@ import { useEffect } from 'react';
 
 const App = () => {
     //const content = useSelector(state => state);
+    const [loading,setLoading] = useState(true);
     const dispatch = useDispatch();
 
     const getData = () => {
@@ -36,6 +38,7 @@ const App = () => {
                     dispatch({type:'FETCH_STOV_DATA',stovdata: resSTOV.data});
                     dispatch({type:'FETCH_STATES_DATA',stdata: resSTATES.data});
                     console.log("Dispatched");
+                    setLoading(false);
                 })
             ).catch(errors => {
                 console.log(errors);
@@ -47,17 +50,24 @@ const App = () => {
         dispatch(getData());
     },[]);
 
-    return (
-        <>
-            <Header />
-            <Router>
-                <Home path="/"/>
-                <State path="/:stateId" />
-                <Compare path="/compare" />
-            </Router>
-            <GlobalStyle />
-        </>
-    )
+    if (loading) {
+        return (
+            <Spinner />
+        );
+    } else {
+        return (
+            <>
+                <Header />
+                <Router>
+                    <Home path="/"/>
+                    <State path="/:stateId" />
+                    <Compare path="/compare" />
+                </Router>
+                <GlobalStyle />
+            </>
+        )
+    }
+
 };
 
 export default App;

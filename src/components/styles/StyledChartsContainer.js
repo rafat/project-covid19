@@ -23,6 +23,13 @@ export const StyledChartsContainer = styled.div`
     color: primary75;
   }
 
+  .bottombar-content {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    width: 100%;
+  }
+
   h3 {
     font-family: 'Rubik', sans-serif;
     font-size: 20px;
