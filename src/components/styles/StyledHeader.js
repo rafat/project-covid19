@@ -10,7 +10,7 @@ export const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 15px;
+  padding: 0 20px;
   box-sizing: border-box;
   z-index: 90;
 
@@ -19,8 +19,22 @@ export const StyledHeader = styled.div`
     font-family: 'Rubik', sans-serif;
     font-size: 15px;
     text-align: center;
-
+    float: left;
+    padding: 15px;
+    color: #fff;
   }
+
+  .header-right {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    float: right;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    height: 100%;
+  }
+
 
   @media screen and (max-width: 500px) {
     max-width: 1280px;

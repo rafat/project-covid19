@@ -20,6 +20,7 @@ const ChartsContainer = ({stateId}) => {
         {value: "death", label: "Deaths"},
         {value: "hospitalized", label: "Hospitalizations"},
         {value: "cfr", label: "Case Fatality Rate (%)"},
+        {value: "positivityRate", label: "Positive Rate (%)"},
         {value: "positiveIncrease", label: "Confirmed Cases (Daily Increase)"},
         {value: "totalTestResultsIncrease", label:"Total Tests (Daily Increase)"},
         {value: "deathIncrease", label: "Deaths (Daily Increase)"},
@@ -51,7 +52,7 @@ const ChartsContainer = ({stateId}) => {
         <StyledChartsContainer>
             <div className="chart-content">
                 <Select 
-                value={svalue} 
+                value={svalue.label} 
                 onChange={displayChart} 
                 options={options} 
                 className="select-content"

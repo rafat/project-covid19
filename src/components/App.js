@@ -9,6 +9,7 @@ import {API_OV_URL, API_DAILY_URL, API_STOV_URL, API_STATES_URL} from '../config
 import Home from './Home';
 import State from './State';
 import Compare from './Compare';
+import About from './About';
 
 import {GlobalStyle} from './styles/GlobalStyle';
 import { useEffect } from 'react';
@@ -62,6 +63,7 @@ const App = () => {
                     <Home path="/"/>
                     <State path="/:stateId" />
                     <Compare path="/compare" />
+                    <About path="/about" />
                 </Router>
                 <GlobalStyle />
             </>

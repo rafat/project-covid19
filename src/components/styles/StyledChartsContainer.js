@@ -32,7 +32,7 @@ export const StyledChartsContainer = styled.div`
 
   h3 {
     font-family: 'Rubik', sans-serif;
-    font-size: 20px;
+    font-size: 15px;
     text-align: center;
   }
 

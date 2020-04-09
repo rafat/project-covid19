@@ -79,12 +79,14 @@ const reducer = (state = initialState, action) => {
                 let dt = action.usdata[i].date.toString().substring(0,4).toString()+"-"+action.usdata[i].date.toString().substring(4,6).toString()+
             "-"+action.usdata[i].date.toString().substring(6).toString();
                 let cfr = (action.usdata[i].death/action.usdata[i].positive)*100;
+                let pr = (action.usdata[i].positive/action.usdata[i].totalTestResults)*100;
+                pr = (pr === undefined) || (isNaN(pr)) ? null : pr;
                 data = [...data,{"date" : dt,"positive": action.usdata[i].positive, "hospitalized": action.usdata[i].hospitalized,
                                 "death": action.usdata[i].death,"total": action.usdata[i].totalTestResults,"deathIncrease":action.usdata[i].deathIncrease,
                                 "hospitalizedIncrease":action.usdata[i].hospitalizedIncrease,"positiveIncrease":action.usdata[i].positiveIncrease,
                                 "totalTestResultsIncrease":action.usdata[i].totalTestResultsIncrease,"hospitalizedCumulative": action.usdata[i].hospitalizedCumulative,
                                 "hospitalizedCurrently": action.usdata[i].hospitalizedCurrently,"inIcuCumulative": action.usdata[i].inIcuCumulative,
-                                "inIcuCurrently": action.usdata[i].inIcuCurrently,"cfr": cfr
+                                "inIcuCurrently": action.usdata[i].inIcuCurrently,"cfr": cfr,"positivityRate": pr
                             }];
 
                 tableData = [...tableData,{x : dt,y: action.usdata[i].positive === undefined ? null : action.usdata[i].positive}];
@@ -165,12 +167,14 @@ const reducer = (state = initialState, action) => {
                 let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
             "-"+stateobj[i].date.toString().substring(6).toString();
                 let cfr = (stateobj[i].death/stateobj[i].positive)*100;
+                let pr = (stateobj[i].positive/stateobj[i].totalTestResults)*100;
+                pr = (pr === undefined) || (isNaN(pr)) ? null : pr;
                 data = [...data,{"date" : dt,"positive": stateobj[i].positive, "hospitalized": stateobj[i].hospitalized,
                                 "death": stateobj[i].death,"total": stateobj[i].totalTestResults,"deathIncrease":stateobj[i].deathIncrease,
                                 "hospitalizedIncrease":stateobj[i].hospitalizedIncrease,"positiveIncrease":stateobj[i].positiveIncrease,
                                 "totalTestResultsIncrease":stateobj[i].totalTestResultsIncrease,"hospitalizedCumulative": stateobj[i].hospitalizedCumulative,
                                 "hospitalizedCurrently": stateobj[i].hospitalizedCurrently,"inIcuCumulative": stateobj[i].inIcuCumulative,
-                                "inIcuCurrently": stateobj[i].inIcuCurrently,"cfr": cfr
+                                "inIcuCurrently": stateobj[i].inIcuCurrently,"cfr": cfr, "positivityRate": pr
                             }];
                             
                 tableData = [...tableData,{x : dt,y: (stateobj[i].positive === undefined || isNaN(stateobj[i].positive)) ? null : stateobj[i].positive}];
@@ -216,7 +220,7 @@ const reducer = (state = initialState, action) => {
                             let state2 = StateData.filter(e => e.state==="US");
                             let pop = state2[0].population/100000;
     
-                            if (action.stats === "cfr") {
+                            if (action.stats === "cfr" || action.stats === "positivityRate") {
                                 pop = 1;
                             }
                 
@@ -239,6 +243,15 @@ const reducer = (state = initialState, action) => {
                                     y: (cfr === undefined || isNaN(cfr)) ? null : cfr}];
                                 }
     
+                            } else if (action.stats === "positivityRate") {
+                                for (let i = rlen-1; i >= 0;i--) {
+                                    let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
+                                    "-"+stateobj[i].date.toString().substring(6).toString();
+                                    let pr = (stateobj[i].positive/stateobj[i].totalTestResults)*100;
+                                    
+                                    tableData = [...tableData,{x: dt,
+                                    y: (pr === undefined) || (isNaN(pr)) ? null : pr}];
+                                }
                             }
                             else {
                                 for (let i = rlen-1; i >= 0;i--) {
@@ -294,6 +307,13 @@ const reducer = (state = initialState, action) => {
                                     let cfr = (state2[i].death/state2[i].positive)*100;
                                     tableData = [...tableData,{x: rlen-1-i,
                                     y: (cfr === undefined || isNaN(cfr)) ? null : cfr}];
+                                }
+    
+                            } else if (action.stats === "positivityRate") {
+                                for (let i = rlen-1; i >= 0;i--) {
+                                    let pr = (state2[i].positive/state2[i].totalTestResults)*100;
+                                    tableData = [...tableData,{x: rlen-1-i,
+                                    y: (pr === undefined || isNaN(pr)) ? null : pr}];
                                 }
     
                             }

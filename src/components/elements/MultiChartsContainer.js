@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import Select from 'react-select';
 import LineChart from './LineChart';
-import PieChart from './PieChart';
 import RenderButton from './RenderButton';
 
 import {StateData} from '../../data/StateData';
@@ -37,6 +36,7 @@ const MultiChartsContainer = () => {
         {value: "death", label: "Deaths"},
         {value: "hospitalized", label: "Hospitalizations"},
         {value: "cfr", label: "Case Fatality Rate (%)"},
+        {value: "positivityRate", label: "Positive Tests Rate (%)"},
         {value: "positiveIncrease", label: "Confirmed Cases (Daily Increase)"},
         {value: "totalTestResultsIncrease", label:"Total Tests (Daily Increase)"},
         {value: "deathIncrease", label: "Deaths (Daily Increase)"},
@@ -77,7 +77,7 @@ const MultiChartsContainer = () => {
     const RefreshGraph = () => {
         let obj = options.filter(e => e.value === stats);
         setSlabel(obj[0].label.toUpperCase());
-        dispatch({type:'GET_COMPARISON_CHART_DATA',yaxis:selectedValues,stats:stats,baseline:baseline});
+        dispatch({type:'GET_COMPARISON_CHART_DATA',yaxis:selectedValues,stats:stats,baseline:0});
     }
 
     return (
@@ -85,7 +85,8 @@ const MultiChartsContainer = () => {
         <StyledChartsContainer>
             <div className="chart-content">
             <Select 
-            value={stats} 
+            value={stats.label} 
+            defaultValue={[options[0]]}
             onChange={setStatistics} 
             options={options} 
             className="select-content"
