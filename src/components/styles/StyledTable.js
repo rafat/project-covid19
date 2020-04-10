@@ -17,8 +17,9 @@ export const StyledTable = styled.div`
 
 
     thead {
-      background: #00a8e6;
-      color: #000;
+      background: #000;
+      color: #fff;
+      font-family: 'Rubik', sans-serif;
     }
 
     tbody {

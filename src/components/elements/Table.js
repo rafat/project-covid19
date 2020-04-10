@@ -18,7 +18,7 @@ const Table = ({labels,content}) => {
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
                             <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                {column.render('Header')}
+                                {column.render('Header').toUpperCase()}
                                 <span>
                                     {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
                                 </span>
