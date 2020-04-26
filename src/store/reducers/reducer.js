@@ -79,6 +79,7 @@ const reducer = (state = initialState, action) => {
                 let dt = action.usdata[i].date.toString().substring(0,4).toString()+"-"+action.usdata[i].date.toString().substring(4,6).toString()+
             "-"+action.usdata[i].date.toString().substring(6).toString();
                 let cfr = (action.usdata[i].death/action.usdata[i].positive)*100;
+                cfr = (cfr === undefined) || (isNaN(cfr)) ? null : cfr;
                 let pr = (action.usdata[i].positive/action.usdata[i].totalTestResults)*100;
                 pr = (pr === undefined) || (isNaN(pr)) ? null : pr;
                 data = [...data,{"date" : dt,"positive": action.usdata[i].positive, "hospitalized": action.usdata[i].hospitalized,
@@ -166,9 +167,12 @@ const reducer = (state = initialState, action) => {
             for(let i = rlen -1; i >= 0; i--) {
                 let dt = stateobj[i].date.toString().substring(0,4).toString()+"-"+stateobj[i].date.toString().substring(4,6).toString()+
             "-"+stateobj[i].date.toString().substring(6).toString();
-                let cfr = (stateobj[i].death/stateobj[i].positive)*100;
-                let pr = (stateobj[i].positive/stateobj[i].totalTestResults)*100;
-                pr = (pr === undefined) || (isNaN(pr)) ? null : pr;
+                let cfr = (stateobj[i].death === undefined || isNaN(stateobj[i].death) || stateobj[i].positive === undefined || isNaN(stateobj[i].positive))
+                 ? null : (stateobj[i].death/stateobj[i].positive)*100;
+
+                let pr = (stateobj[i].totalTestResults === undefined || isNaN(stateobj[i].totalTestResults) || stateobj[i].positive === undefined || isNaN(stateobj[i].positive))
+                ? null : (stateobj[i].positive/stateobj[i].totalTestResults)*100;
+
                 data = [...data,{"date" : dt,"positive": stateobj[i].positive, "hospitalized": stateobj[i].hospitalized,
                                 "death": stateobj[i].death,"total": stateobj[i].totalTestResults,"deathIncrease":stateobj[i].deathIncrease,
                                 "hospitalizedIncrease":stateobj[i].hospitalizedIncrease,"positiveIncrease":stateobj[i].positiveIncrease,
